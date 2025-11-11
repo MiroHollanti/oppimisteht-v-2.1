@@ -30,9 +30,9 @@ def main():
         varausnumero = int(varausnumero)
         varaaja = str(varaaja)
         varauspäivä = datetime.strptime(varauspäivä, "%d.%m.%Y").date()
-        aloitusaika = datetime.strptime(aloitusaika, "%H.%M").time()
+        aloitusaika = datetime.strptime(aloitusaika, "%H:%M").time()
         tuntimäärä = int(tuntimäärä)
-        tuntihinta = float(tuntihinta)
+        tuntihinta = float(tuntihinta.replace(',', '.'))
         maksettu = bool(maksettu)
         varauskohde = str(varauskohde)
         puhelinnumero = str(puhelinnumero)
@@ -43,13 +43,13 @@ def main():
     print(f"varauspäivä: {varauspäivä}")
     print(f"aloitusaika: {aloitusaika}")
     print(f"tuntimäärä: {tuntimäärä}")
-    print(f"tuntihinta: {tuntihinta} €")
-    print(f"Kokonaishinta: {tuntimäärä * tuntihinta} €")
+    print(f"tuntihinta: {tuntihinta:.2f}".replace('.', ',') + " €")
+    print(f"Kokonaishinta: {(tuntimäärä * tuntihinta):.2f}".replace('.', ',') + " €")
     print(f"maksettu: {maksettu}")
     print(f"varauskohde: {varauskohde}")
     print(f"puhelinnumero: {puhelinnumero}")
     print(f"sähköposti: {sähköposti}")
-    
+
     # Kokeile näitä
     #print(varaus.split('|'))
     #varausId = varaus.split('|')[0]
