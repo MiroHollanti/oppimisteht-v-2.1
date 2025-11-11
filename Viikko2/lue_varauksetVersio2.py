@@ -18,6 +18,7 @@ Sähköposti: anna.virtanen@example.com
 
 from datetime import datetime
 
+from datetime import datetime, timedelta
 
 def main():
     # Määritellään tiedoston nimi suoraan koodissa
@@ -32,6 +33,7 @@ def main():
         varauspäivä = datetime.strptime(varauspäivä, "%d.%m.%Y").date()
         aloitusaika = datetime.strptime(aloitusaika, "%H:%M").time()
         tuntimäärä = int(tuntimäärä)
+        päättymisaika = (datetime.combine(datetime.today(), aloitusaika) + timedelta(hours=tuntimäärä)).time()
         tuntihinta = float(tuntihinta.replace(',', '.'))
         maksettu = maksettu.strip()
         varauskohde = str(varauskohde)
@@ -43,6 +45,7 @@ def main():
     print(f"varauspäivä: {varauspäivä.strftime('%d.%m.%Y')}")
     print(f"aloitusaika: {aloitusaika.strftime('%H:%M')}")
     print(f"tuntimäärä: {tuntimäärä}")
+    print(f"päättymisaika: {päättymisaika.strftime('%H:%M')}")
     print(f"tuntihinta: {tuntihinta:.2f}".replace('.', ',') + " €")
     print(f"Kokonaishinta: {(tuntimäärä * tuntihinta):.2f}".replace('.', ',') + " €")
     print(f"maksettu: {'Kyllä' if maksettu.lower() == 'true' else 'Ei'}")
