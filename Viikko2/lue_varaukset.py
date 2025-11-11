@@ -23,22 +23,34 @@ def main():
     # Avataan tiedosto ja luetaan sisältö
     with open(varaukset, "r", encoding="utf-8") as f:
         varaus = f.read().strip()
+        (varausnumero, varaaja, varauspäivä, aloitusaika, tuntimäärä, tuntihinta, maksettu, varauskohde, puhelinnumero, sähköposti) = varaus.split('|')
 
     # Tulostetaan varaus konsoliin
-    print(varaus)
+    print(f"Varausnumero: {varausnumero}")
+    print(f"Varaaja: {varaaja}")
+    print(f"Päivämäärä: {varauspäivä}")
+    print(f"Aloitusaika: {aloitusaika}")
+    print(f"Tuntimäärä: {tuntimäärä}")
+    print(f"Tuntihinta: {tuntihinta} €")
+    print(f"Kokonaishinta: {float(tuntimäärä) * float(tuntihinta)} €")
+    print(f"Maksettu: {maksettu}")
+    print(f"Kohde: {varauskohde}")
+    print(f"Puhelin: {puhelinnumero}")
+    print(f"Sähköposti: {sähköposti}")
 
     # Kokeile näitä
     #print(varaus.split('|'))
     #varausId = varaus.split('|')[0]
     #print(varausId)
     #print(type(varausId))
+
     """
     Edellisen olisi pitänyt tulostaa numeron 123, joka
     on oletuksena tekstiä.
 
     Voit kokeilla myös vaihtaa kohdan [0] esim. seuraavaksi [1]
-    ja testata mikä muuttuu
+    ja testata mikä muuttuu 
     """
-
+    
 if __name__ == "__main__":
     main()
