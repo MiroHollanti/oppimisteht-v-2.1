@@ -16,6 +16,9 @@ Sähköposti: anna.virtanen@example.com
 
 """
 
+from datetime import datetime
+
+
 def main():
     # Määritellään tiedoston nimi suoraan koodissa
     varaukset = "varaukset.txt"
@@ -24,20 +27,29 @@ def main():
     with open(varaukset, "r", encoding="utf-8") as f:
         varaus = f.read().strip()
         (varausnumero, varaaja, varauspäivä, aloitusaika, tuntimäärä, tuntihinta, maksettu, varauskohde, puhelinnumero, sähköposti) = varaus.split('|')
+        varausnumero = int(varausnumero)
+        varaaja = str(varaaja)
+        varauspäivä = datetime.strptime(varauspäivä, "%d.%m.%Y").date()
+        aloitusaika = datetime.strptime(aloitusaika, "%H.%M").time()
+        tuntimäärä = int(tuntimäärä)
+        tuntihinta = float(tuntihinta)
+        maksettu = bool(maksettu)
+        varauskohde = str(varauskohde)
+        puhelinnumero = str(puhelinnumero)
+        sähköposti = str(sähköposti)
 
-    # Tulostetaan varaus konsoliin
-    print(f"Varausnumero: {varausnumero}")
-    print(f"Varaaja: {varaaja}")
-    print(f"Pavämä: {varauspäivä}")
-    print(f"Aloitusaika: {aloitusaika}")
-    print(f"Tuntimäärä: {tuntimäärä}")
-    print(f"Tuntihinta: {tuntihinta} €")
-    print(f"Kokonaishinta: {float(tuntimäärä) * float(tuntihinta)} €")
-    print(f"Maksettu: {maksettu}")
-    print(f"Kohde: {varauskohde}")
-    print(f"Puhelin: {puhelinnumero}")
-    print(f"Sähköposti: {sähköposti}")
-
+    print(f"varausnumero: {varausnumero}")
+    print(f"varaaja: {varaaja}")
+    print(f"varauspäivä: {varauspäivä}")
+    print(f"aloitusaika: {aloitusaika}")
+    print(f"tuntimäärä: {tuntimäärä}")
+    print(f"tuntihinta: {tuntihinta} €")
+    print(f"Kokonaishinta: {tuntimäärä * tuntihinta} €")
+    print(f"maksettu: {maksettu}")
+    print(f"varauskohde: {varauskohde}")
+    print(f"puhelinnumero: {puhelinnumero}")
+    print(f"sähköposti: {sähköposti}")
+    
     # Kokeile näitä
     #print(varaus.split('|'))
     #varausId = varaus.split('|')[0]
