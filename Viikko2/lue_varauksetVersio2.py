@@ -52,6 +52,7 @@ def main():
     print(f"varauskohde: {varauskohde}")
     print(f"puhelinnumero: {puhelinnumero}")
     print(f"sähköposti: {sähköposti}")
+    
 
     # Kokeile näitä
     #print(varaus.split('|'))

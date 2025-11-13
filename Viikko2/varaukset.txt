@@ -1,1 +1,3 @@
-67|Anna Virtanen|31.10.2025|10:30|2|19,95|True|Kokoustila A|0401234567|anna.virtanen@example.com
+67|Anna Virtanen|31.10.2025|10:30|2|19,95|False|Kokoustila A|0401234567|anna.virtanen@example.com
+68|Guy Incognito|01.11.2025|15:45|1|24,95|True|Kokoustila D2|0401234568|guy.incognito@example.se
+69|Max Overdrive|01.11.2025|12:00|3|14,95|False|Kokoustila A|0401234569|maximum.overdrive@example.fi
