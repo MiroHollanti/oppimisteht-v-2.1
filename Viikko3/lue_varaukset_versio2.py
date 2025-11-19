@@ -66,37 +66,26 @@ def main():
     # Maaritellaan tiedoston nimi suoraan koodissa
     varaukset = "varaukset.txt"
 
-    # Avataan tiedosto, luetaan ja splitataan sisalto
+    # Avataan tiedosto ja luetaan kaikki varaukset
     with open(varaukset, "r", encoding="utf-8") as f:
-        varaus = f.read().strip()
-        varaus = varaus.split('|')
+        varaukset_lista = f.readlines()
 
-    # Toteuta loput funktio hae_varaaja(varaus) mukaisesti
-    # Luotavat funktiota tekevat tietotyyppien muunnoksen
-    # ja tulostavat esimerkkitulosteen mukaisesti
-
-    #hae_varausnumero(varaus)
-    print(varaus)
-    hae_varausnumero(varaus)
-    hae_varaaja(varaus)
-    hae_paiva(varaus)
-    hae_aloitusaika(varaus)
-    hae_tuntimaara(varaus)
-    hae_tuntihinta(varaus)
-    hae_kokonaishinta(varaus)
-    hae_maksettu(varaus)
-    hae_kohde(varaus)
-    hae_puhelin(varaus)
-    hae_sahkoposti(varaus)
-    #hae_paiva(varaus)
-    #hae_aloitusaika(varaus)
-    #hae_tuntimaara(varaus)
-    #hae_tuntihinta(varaus)
-    #laske_kokonaishinta(varaus)
-    #hae_maksettu(varaus)
-    #hae_kohde(varaus)
-    #hae_puhelin(varaus)
-    #hae_sahkoposti(varaus)
+    # Käydään jokainen varaus läpi
+    for varaus_rivi in varaukset_lista:
+        varaus = varaus_rivi.strip().split('|')
+        
+        hae_varausnumero(varaus)
+        hae_varaaja(varaus)
+        hae_paiva(varaus)
+        hae_aloitusaika(varaus)
+        hae_tuntimaara(varaus)
+        hae_tuntihinta(varaus)
+        hae_kokonaishinta(varaus)
+        hae_maksettu(varaus)
+        hae_kohde(varaus)
+        hae_puhelin(varaus)
+        hae_sahkoposti(varaus)
+        print()  # Tyhjä rivi varausten väliin
 
 if __name__ == "__main__":
     main()
