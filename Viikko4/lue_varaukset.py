@@ -22,6 +22,7 @@ int | str | str | str | date | time | int | float | bool | str | datetime
 from datetime import datetime
 
 def muunna_varaustiedot(varaus: list) -> list:
+    #print(varaus)
     # Tähän tulee siis varaus oletustietotyypeillä (str)
     # Varauksessa on 11 saraketta -> Lista -> Alkiot 0-10
     # Muuta tietotyypit haluamallasi tavalla -> Seuraavassa esimerkki ensimmäisestä alkioista
@@ -29,16 +30,16 @@ def muunna_varaustiedot(varaus: list) -> list:
     # Ensimmäisen alkion = varaus[0] muunnos
     muutettu_varaus.append(int(varaus[0]))
     # Ja tästä jatkuu
-    muutettu_varaus.append("")
-    muutettu_varaus.append("")
-    muutettu_varaus.append("")
-    muutettu_varaus.append("")
-    muutettu_varaus.append("")
-    muutettu_varaus.append("")
-    muutettu_varaus.append("")
-    muutettu_varaus.append("")
-    muutettu_varaus.append("")
-    muutettu_varaus.append("")
+    muutettu_varaus.append(varaus[1])
+    muutettu_varaus.append(varaus[2])
+    muutettu_varaus.append(varaus[3])
+    muutettu_varaus.append(datetime.strptime(varaus[4], "%Y-%m-%d").date())
+    muutettu_varaus.append(datetime.strptime(varaus[5], "%H:%M").time())
+    muutettu_varaus.append(int(varaus[6]))
+    muutettu_varaus.append(float(varaus[7]))
+    muutettu_varaus.append(varaus[8].lower() == 'true')
+    muutettu_varaus.append(varaus[9])
+    muutettu_varaus.append(datetime.strptime(varaus[10], "%Y-%m-%d %H:%M:%S"))
     return muutettu_varaus
 
 def hae_varaukset(varaustiedosto: str) -> list:
@@ -53,18 +54,78 @@ def hae_varaukset(varaustiedosto: str) -> list:
             varaukset.append(muunna_varaustiedot(varaustiedot))
     return varaukset
 
+def vahvistetut_varaukset(varaukset: list):
+    for varaus in varaukset[1:]:
+#- Pikku Myy Myrsky, 22.10.2025 klo 15.45, kesto 3 h, Punainen huone
+        if varaus[8] == True:
+            print(f"- {varaus[1]}, {varaus[9]}, {varaus[4].strftime('%d.%m.%Y')}, klo {varaus[5].strftime('%H:%M')} -")
+    
+    print()  # Tyhjä rivi osioiden väliin
+
+def pitkät_varaukset(varaukset: list):
+    for varaus in varaukset[1:]:
+        #print("-Nimi, Varattu Tila, pv.kk.vvvv, klo tt:mm - vahvistetut varaukset-")
+        if varaus[6] >= 3:
+            print(f"- {varaus[1]}, {varaus[4].strftime('%d.%m.%Y')}, klo {varaus[5].strftime('%H:%M')}, kesto {varaus[6]} h, {varaus[9]} -")
+            
+    print()  # Tyhjä rivi osioiden väliin
+
+def varausten_vahvistusstatus(varaukset: list):
+    for varaus in varaukset[1:]:
+        #Muumi Muumilaakso → Vahvistettu / Ei vahvistettu
+        #if varaus[6] >= 3:
+        print(f"- {varaus[1]} → {'Vahvistettu' if varaus[8] else 'Ei vahvistettu'} ")
+            
+    print()  # Tyhjä rivi osioiden väliin
+
+def yhteenveto_vahvistuksista(varaukset: list):
+    vahvistetut_varaukset = 0
+    ei_vahvistetut_varaukset = 0
+    for varaus in varaukset[1:]:
+        if varaus[8] == True:
+            vahvistetut_varaukset += 1
+        else:
+            ei_vahvistetut_varaukset += 1
+
+    print(f"- Vahvistettuja varauksia: {vahvistetut_varaukset} kpl")
+    print(f"- Ei vahvistettuja varauksia: {ei_vahvistetut_varaukset} kpl")
+    print()  # Tyhjä rivi osioiden väliin
+
+def vahvistettujen_tulot(varaukset: list):
+    total = 0.0
+    for varaus in varaukset[1:]:
+        if varaus[8] == True:
+            total += varaus[6] * varaus[7]
+    
+    print(f"- Vahvistettujen varausten yhteenlasketut tulot:", f"{total:.2f}".replace('.', ',') + "€")
+    print()  # Tyhjä rivi osioiden väliin
+
+
+
 def main():
     # HUOM! seuraaville riveille ei tarvitse tehdä mitään osassa A!
     # Osa B vaatii muutoksia -> Esim. tulostuksien (print-funktio) muuttamisen.
     # Kutsutaan funkioita hae_varaukset, joka palauttaa kaikki varaukset oikeilla tietotyypeillä
     varaukset = hae_varaukset("varaukset.txt")
-    print(" | ".join(varaukset[0]))
-    print("------------------------------------------------------------------------")
-    for varaus in varaukset[1:]:
-        print(" | ".join(str(x) for x in varaus))
-        tietotyypit = [type(x).__name__ for x in varaus]
-        print(" | ".join(tietotyypit))
-        print("------------------------------------------------------------------------")
+    print("1) Vahvistetut varaukset:")
+    vahvistetut_varaukset(varaukset)
+    print("2) Pitkät varaukset (≥ 3 h):")
+    pitkät_varaukset(varaukset)
+    print("3) Varausten vahvistusstatus:")
+    varausten_vahvistusstatus(varaukset)
+    print("4) Yhteenveto vahvistuksista:")
+    yhteenveto_vahvistuksista(varaukset)
+    print("5) Vahvistettujen varausten tulot:")
+    vahvistettujen_tulot(varaukset)
+#- Pikku Myy Myrsky, 22.10.2025 klo 15.45, kesto 3 h, Punainen huone
+    # Tulostetaan varaukset ja niiden tietotyypit
+    #print(" | ".join(varaukset[0]))
+    #print("------------------------------------------------------------------------")
+    #for varaus in varaukset[1:]:
+    #    print(" | ".join(str(x) for x in varaus))
+    #    tietotyypit = [type(x).__name__ for x in varaus]
+    #    print(" | ".join(tietotyypit))
+    #    print("------------------------------------------------------------------------")
 
 if __name__ == "__main__":
     main()
