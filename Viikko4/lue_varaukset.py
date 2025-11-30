@@ -58,7 +58,7 @@ def vahvistetut_varaukset(varaukset: list):
     for varaus in varaukset[1:]:
 #- Pikku Myy Myrsky, 22.10.2025 klo 15.45, kesto 3 h, Punainen huone
         if varaus[8] == True:
-            print(f"- {varaus[1]}, {varaus[9]}, {varaus[4].strftime('%d.%m.%Y')}, klo {varaus[5].strftime('%H:%M')} -")
+            print(f"- {varaus[1]}, {varaus[9]}, {varaus[4].strftime('%d.%m.%Y')}, klo {varaus[5].strftime('%H:%M')}")
     
     print()  # Tyhjä rivi osioiden väliin
 
@@ -66,7 +66,7 @@ def pitkät_varaukset(varaukset: list):
     for varaus in varaukset[1:]:
         #print("-Nimi, Varattu Tila, pv.kk.vvvv, klo tt:mm - vahvistetut varaukset-")
         if varaus[6] >= 3:
-            print(f"- {varaus[1]}, {varaus[4].strftime('%d.%m.%Y')}, klo {varaus[5].strftime('%H:%M')}, kesto {varaus[6]} h, {varaus[9]} -")
+            print(f"- {varaus[1]}, {varaus[4].strftime('%d.%m.%Y')}, klo {varaus[5].strftime('%H:%M')}, kesto {varaus[6]} h, {varaus[9]}")
             
     print()  # Tyhjä rivi osioiden väliin
 
