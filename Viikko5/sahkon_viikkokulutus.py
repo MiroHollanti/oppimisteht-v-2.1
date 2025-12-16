@@ -30,98 +30,67 @@ def lue_data(tiedoston_nimi: str) -> list:
             Sahkotiedot.append(muunna_tiedot(SahkotietoSarakkeet))
     return Sahkotiedot
 
-def paivanarvot(paiva: str, Lukuarvot: list) -> int:
-    """Laskee annetun päivän kulutuksen vaiheessa 1."""
-    pv = int(paiva.split('.')[0])
-    kk = int(paiva.split('.')[1])
-    vuosi = int(paiva.split('.')[2])
-    lasketutArvot =[]
-    Kulutus1 = 0
-    Kulutus2 = 0
-    Kulutus3 = 0
-    Tuotanto1 = 0
-    Tuotanto2 = 0
-    Tuotanto3 = 0
+
+def tulosta_paivarivi(viikonpaiva_nimi: str, pvm_str: str, arvot: list) -> None:
+    # arvot = [k1,k2,k3,t1,t2,t3] kWh
+    netto = (arvot[0] + arvot[1] + arvot[2]) - (arvot[3] + arvot[4] + arvot[5])
+    # korvaa piste pilkulla tulostuksessa
+    fmt = lambda x: f"{x:.2f}".replace(".", ",")
+    print(
+        f"{viikonpaiva_nimi}\t{pvm_str}\t"
+        f"{fmt(arvot[0])}\t{fmt(arvot[1])}\t{fmt(arvot[2])}\t\t"
+        f"{fmt(arvot[3])}\t{fmt(arvot[4])}\t{fmt(arvot[5])}\t"
+               f"{fmt(netto)}"
+    )
+   
+VIIKONPAIVAT_FI = ["Maanantai", "Tiistai\t", "Keskiviikko", "Torstai\t", "Perjantai", "Lauantai", "Sunnuntai"]
+
+def viikonpaiva_nimi(dt: datetime) -> str:
+    return VIIKONPAIVAT_FI[dt.weekday()]  # 0=maanantai, 6=sunnuntai
+
+
+def hae_uniikit_paivat(Lukuarvot: list) -> list[date]:
+    # Lukuarvo[0] on datetime; otetaan .date() ja laitetaan settiin
+    paivat = sorted({lr[0].date() for lr in Lukuarvot})
+   
+    return paivat
+
+
+def paivanarvot_date(pvm: date, Lukuarvot: list) -> list:
+    Kulutus1 = Kulutus2 = Kulutus3 = 0
+    Tuotanto1 = Tuotanto2 = Tuotanto3 = 0
     for lukuarvo in Lukuarvot:
-        if lukuarvo[0].date() == date(vuosi, kk, pv):
+        if lukuarvo[0].date() == pvm:
             Kulutus1 += lukuarvo[1]
             Kulutus2 += lukuarvo[2]
             Kulutus3 += lukuarvo[3]
             Tuotanto1 += lukuarvo[4]
             Tuotanto2 += lukuarvo[5]
             Tuotanto3 += lukuarvo[6]
+    # muutetaan kWh:ksi
+    return [
+        Kulutus1/1000, Kulutus2/1000, Kulutus3/1000,
+        Tuotanto1/1000, Tuotanto2/1000, Tuotanto3/1000
+    ]
 
-    lasketutArvot.append(Kulutus1/1000)
-    lasketutArvot.append(Kulutus2/1000)
-    lasketutArvot.append(Kulutus3/1000)
-    lasketutArvot.append(Tuotanto1/1000)
-    lasketutArvot.append(Tuotanto2/1000)
-    lasketutArvot.append(Tuotanto3/1000)
-    return lasketutArvot
 
 def main() -> None:
     """Ohjelman pääfunktio: lukee datan, laskee yhteenvedot ja tulostaa raportin."""
     #print(lue_data("viikko42.csv"))
     Lukuarvot = lue_data("viikko42.csv")
-    print("\nViikon 42 sähkönkulutus ja -tuotanto (kWh, vaiheittain):", end="\n\n")
-    print("Päivä\t\tPvm\t\t Kulutus [kWh]\t\t\tTuotanto [kWh]")
+
+    print("\nViikon 42 sähkönkulutus ja -tuotanto (kWh, vaiheittain):\n")
+    print("Päivä\t\tPvm\t\t Kulutus [kWh]\t\t\tTuotanto [kWh]\t\tNetto [kWh]")
     print("\t\t(pv.kk.vvvv)\t v1\tv2\tv3\t\tv1\tv2\tv3")
-    print("-------------------------------------------------------------------------------------")
-    maanantainarvot = paivanarvot("13.10.2025", Lukuarvot)
-    print(f"Maanantai\t13.10.2025\t", f"{maanantainarvot[0]:.2f}".replace(".", ","), end="\t")
-    print(f"{maanantainarvot[1]:.2f}".replace(".", ","), end="\t")
-    print(f"{maanantainarvot[2]:.2f}".replace(".", ","), end="\t\t")
-    print(f"{maanantainarvot[3]:.2f}".replace(".", ","), end="\t")
-    print(f"{maanantainarvot[4]:.2f}".replace(".", ","), end="\t")
-    print(f"{maanantainarvot[5]:.2f}".replace(".", ","))
+    print("-----------------------------------------------------------------------------------------------------------")
 
-    tiistainarvot = paivanarvot("14.10.2025", Lukuarvot)
-    print(f"Tiistai \t14.10.2025\t", f"{tiistainarvot[0]:.2f}".replace(".", ","), end="\t")
-    print(f"{tiistainarvot[1]:.2f}".replace(".", ","), end="\t")
-    print(f"{tiistainarvot[2]:.2f}".replace(".", ","), end="\t\t")
-    print(f"{tiistainarvot[3]:.2f}".replace(".", ","), end="\t")
-    print(f"{tiistainarvot[4]:.2f}".replace(".", ","), end="\t")
-    print(f"{tiistainarvot[5]:.2f}".replace(".", ","))
+    # A) iterointi uniikeista päivistä datassa
+    for pvm in hae_uniikit_paivat(Lukuarvot):
+        arvot = paivanarvot_date(pvm, Lukuarvot)
+        viikonpaiva = viikonpaiva_nimi(datetime.combine(pvm, datetime.min.time()))
+        pvm_str = pvm.strftime("%d.%m.%Y")
+        tulosta_paivarivi(viikonpaiva, pvm_str, arvot)
 
-    keskiviikonarvot = paivanarvot("15.10.2025", Lukuarvot)
-    print(f"Keskiviikko\t15.10.2025\t", f"{keskiviikonarvot[0]:.2f}".replace(".", ","), end="\t")
-    print(f"{keskiviikonarvot[1]:.2f}".replace(".", ","), end="\t")
-    print(f"{keskiviikonarvot[2]:.2f}".replace(".", ","), end="\t\t")
-    print(f"{keskiviikonarvot[3]:.2f}".replace(".", ","), end="\t")
-    print(f"{keskiviikonarvot[4]:.2f}".replace(".", ","), end="\t")
-    print(f"{keskiviikonarvot[5]:.2f}".replace(".", ","))
-
-    torstainarvot = paivanarvot("16.10.2025", Lukuarvot)
-    print(f"Torstai \t16.10.2025\t", f"{torstainarvot[0]:.2f}".replace(".", ","), end="\t")
-    print(f"{torstainarvot[1]:.2f}".replace(".", ","), end="\t")
-    print(f"{torstainarvot[2]:.2f}".replace(".", ","), end="\t\t")
-    print(f"{torstainarvot[3]:.2f}".replace(".", ","), end="\t")
-    print(f"{torstainarvot[4]:.2f}".replace(".", ","), end="\t")
-    print(f"{torstainarvot[5]:.2f}".replace(".", ","))
-
-    perjantainarvot = paivanarvot("17.10.2025", Lukuarvot)
-    print(f"Perjantai \t17.10.2025\t", f"{perjantainarvot[0]:.2f}".replace(".", ","), end="\t")
-    print(f"{perjantainarvot[1]:.2f}".replace(".", ","), end="\t")
-    print(f"{perjantainarvot[2]:.2f}".replace(".", ","), end="\t\t")
-    print(f"{perjantainarvot[3]:.2f}".replace(".", ","), end="\t")
-    print(f"{perjantainarvot[4]:.2f}".replace(".", ","), end="\t")
-    print(f"{perjantainarvot[5]:.2f}".replace(".", ","))
-
-    lauantainarvot = paivanarvot("18.10.2025", Lukuarvot)
-    print(f"Lauantai \t18.10.2025\t", f"{lauantainarvot[0]:.2f}".replace(".", ","), end="\t")
-    print(f"{lauantainarvot[1]:.2f}".replace(".", ","), end="\t")
-    print(f"{lauantainarvot[2]:.2f}".replace(".", ","), end="\t\t")
-    print(f"{lauantainarvot[3]:.2f}".replace(".", ","), end="\t")
-    print(f"{lauantainarvot[4]:.2f}".replace(".", ","), end="\t")
-    print(f"{lauantainarvot[5]:.2f}".replace(".", ","))
-
-    sunnuntainarvot = paivanarvot("19.10.2025", Lukuarvot)
-    print(f"Sunnuntai \t19.10.2025\t", f"{sunnuntainarvot[0]:.2f}".replace(".", ","), end="\t")
-    print(f"{sunnuntainarvot[1]:.2f}".replace(".", ","), end="\t")
-    print(f"{sunnuntainarvot[2]:.2f}".replace(".", ","), end="\t\t")
-    print(f"{sunnuntainarvot[3]:.2f}".replace(".", ","), end="\t")
-    print(f"{sunnuntainarvot[4]:.2f}".replace(".", ","), end="\t")
-    print(f"{sunnuntainarvot[5]:.2f}".replace(".", ","))
 
 if __name__ == "__main__":
     main()
